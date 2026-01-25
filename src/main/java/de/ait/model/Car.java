@@ -18,6 +18,7 @@ import lombok.Setter;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name ="cars")
@@ -49,21 +50,28 @@ public class Car {
     @Min(value = 1,  message = "Price must be greater than 1")
     private int price;
 
+    @NotNull (message = "Status must not be null")
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private CarStatus status;
 
     @Column(nullable = false)
     @NotBlank(message = "Please specify the correct color")
     private String color;
 
+    @Column(nullable = false)
     @Min(value = 1, message = "Horsepower must be greater than 1")
     @Max(value = 2300, message = "The number of horsepower should not be more than 2300")
     private int horsepower;
 
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "FuelType must not be null")
+    @Column(nullable = false)
     private FuelType fuelType;
 
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "Transmission must not be null")
+    @Column(nullable = false)
     private Transmission transmission;
 
     public Car(String brand,

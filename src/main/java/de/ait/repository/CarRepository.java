@@ -20,12 +20,17 @@ public interface CarRepository extends JpaRepository<Car, Long> {
 
     List<Car> findByPriceBetween(int min, int max);
 
+
     List<Car> findByColor(String color);
+
+    List<Car> findByColorIgnoreCase(String color);
 
     List<Car> findByHorsepowerBetween(int minHp, int maxHp);
 
     List<Car> findByFuelType(FuelType fuelType);
 
     List<Car> findByTransmission(Transmission transmission);
+
+    boolean existsByColorIgnoreCase (String color);
 
 }
