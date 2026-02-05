@@ -1,0 +1,4 @@
+Запись файлов.
+
+multipart/form-data
+

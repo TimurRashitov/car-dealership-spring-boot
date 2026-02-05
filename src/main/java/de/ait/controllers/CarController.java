@@ -4,11 +4,13 @@ import de.ait.enums.FuelType;
 import de.ait.enums.Transmission;
 import de.ait.model.Car;
 import de.ait.repository.CarRepository;
+import de.ait.validators.CarValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -91,14 +93,17 @@ public class CarController {
 
     @Operation(summary = "Add a new car")
     @PostMapping
-    public ResponseEntity<Long> addCar(@RequestBody Car car) {
-        Car savedCar = carRepository.save(car);
-        if (savedCar == null) {
-            log.error("Car could not be saved");
-            return ResponseEntity.badRequest().build();
+    public ResponseEntity<List<String>> addCar(@RequestBody Car car) {
+        CarValidator carValidator = new CarValidator();
+        List<String> errors = carValidator.validateWithErrors(car);
+        if(!errors.isEmpty()) {
+            return ResponseEntity.badRequest().body(errors);
         }
-        log.info("Car with id{} saved", savedCar.getId());
-        return new ResponseEntity(HttpStatusCode.valueOf(201));
+
+        Car savedCar = carRepository.save(car);
+        log.info("Car with id {} saved", savedCar.getId());
+        return new ResponseEntity<>(HttpStatusCode.valueOf(201));
+        //return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Operation(summary = "Update one car by id")

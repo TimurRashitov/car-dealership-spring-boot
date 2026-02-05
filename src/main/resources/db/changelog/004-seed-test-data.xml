@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <changeSet id="004-seed-test-data" author="Igor Zimmermann">
+        <insert tableName="cars">
+            <column name="id" valueNumeric="1"/>
+            <column name="brand" value="BMW"/>
+            <column name="model" value="X5"/>
+            <column name="production_year" valueNumeric="2020"/>
+            <column name="mileage" valueNumeric="30000"/>
+            <column name="price" valueNumeric="50000"/>
+            <column name="color" value="Blue"/>
+            <column name="horsepower" valueNumeric="300"/>
+            <column name="status" value="AVAILABLE"/>
+            <column name="fuel_type" value="PETROL"/>
+            <column name="transmission" value="AUTOMATIC"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

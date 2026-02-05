@@ -1,0 +1,29 @@
+package de.ait.controllers;
+
+import de.ait.dto.CarOfferEmailRequest;
+import de.ait.service.CarOfferEmailService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/email")
+@RequiredArgsConstructor
+@Slf4j
+public class EmailController {
+
+    private final CarOfferEmailService carOfferEmailService;
+
+    @PostMapping("/car-offer")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void sendCarOfferEmail(@RequestBody @Valid CarOfferEmailRequest carOfferEmailRequest) {
+        log.info("Sending car offer email for request: {}", carOfferEmailRequest);
+        carOfferEmailService.sendCarOfferEmail(carOfferEmailRequest);
+    }
+}

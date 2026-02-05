@@ -18,12 +18,15 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -43,11 +46,11 @@ public class CarControllerIT {
     private MockMvc mockMvc;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         carRepository.deleteAll();
     }
 
-    private Car buildValidCar(String brand, String model){
+    private Car buildValidCar(String brand, String model) {
         Car car = new Car();
         car.setBrand(brand);
         car.setModel(model);
@@ -65,9 +68,9 @@ public class CarControllerIT {
     @Test
     @DisplayName("GET /cars/{id} should return car if exists")
     void testGetCarByIdShouldReturnCar() throws Exception {
-        Car saved = carRepository.save(buildValidCar("BMW","X5"));
+        Car saved = carRepository.save(buildValidCar("BMW", "X5"));
 
-        mockMvc.perform(get("/api/cars/{id}",saved.getId()))
+        mockMvc.perform(get("/api/cars/{id}", saved.getId()))
                 .andExpect(status().isOk());
     }
 
@@ -75,27 +78,37 @@ public class CarControllerIT {
     @DisplayName("GET /cars/{id} should not return car")
     void testGetCarByIdShouldNotReturnCar() throws Exception {
 
-        mockMvc.perform(get("/api/cars/{id}",1L))
+        mockMvc.perform(get("/api/cars/{id}", 1L))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     @DisplayName("POST /api/cars should save car in H2 return 201")
-    void testCreateNewCarShouldReturn201() throws  Exception {
+    void testCreateNewCarShouldReturn201() throws Exception {
         Car car = buildValidCar("Audi", "A6");
 
         String jsonBody = objectMapper.writeValueAsString(car);
 
         mockMvc.perform(
-                post("/api/cars")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonBody))
+                        post("/api/cars")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(jsonBody))
                 .andExpect(status().isCreated());
 
         List<Car> cars = carRepository.findAll();
         assertEquals(1, cars.size());
 
         assertEquals(car.getBrand(), cars.getFirst().getBrand());
+        assertEquals(car.getModel(), cars.getFirst().getModel());
+        assertEquals(car.getPrice(), cars.getFirst().getPrice());
+        assertEquals(car.getStatus(), cars.getFirst().getStatus());
+        assertEquals(car.getColor(), cars.getFirst().getColor());
+        assertEquals(car.getFuelType(), cars.getFirst().getFuelType());
+        assertEquals(car.getHorsepower(), cars.getFirst().getHorsepower());
+        assertEquals(car.getTransmission(), cars.getFirst().getTransmission());
+        assertEquals(car.getProductionYear(), cars.getFirst().getProductionYear());
+        assertEquals(car.getMileage(), cars.getFirst().getMileage());
+
     }
 
     @Test
@@ -104,6 +117,38 @@ public class CarControllerIT {
         Car carAudi = buildValidCar("Audi", "A6");
         Car carKia = buildValidCar("Kia", "Rio");
 
+        carRepository.save(carAudi);
+        carRepository.save(carKia);
+
+        mockMvc.perform(get("/api/cars"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[*].brand", containsInAnyOrder("Audi", "Kia")))
+                .andExpect(jsonPath("$[*].model", containsInAnyOrder("A6", "Rio")));
+
+        List<Car> cars = carRepository.findAll();
+        assertEquals(2, cars.size());
     }
+
+    @Test
+    @DisplayName("POST /api/cars should not save car in H2, invalid JSON return 400")
+    void testCreateNewCarShouldReturn400() throws Exception {
+        Car car = buildValidCar("Audi", "A6");
+        car.setStatus(null);
+
+        String jsonBody = objectMapper.writeValueAsString(car);
+
+        mockMvc.perform(
+                        post("/api/cars")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(jsonBody))
+                .andExpect(status().isBadRequest());
+
+        List<Car> cars = carRepository.findAll();
+        assertTrue(cars.isEmpty());
+    }
+
+
 }
 
