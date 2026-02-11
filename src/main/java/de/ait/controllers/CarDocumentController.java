@@ -43,6 +43,11 @@ public class CarDocumentController {
         Path path = service.getDocumentPath(documentId);
         FileSystemResource resource = new FileSystemResource(path);
 
+        if (!resource.exists()) {
+            log.error("File not found on disk: {}", path);
+            return ResponseEntity.notFound().build();
+        }
+
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
                         "attachment; filename=\"" + resource.getFilename() + "\"")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)

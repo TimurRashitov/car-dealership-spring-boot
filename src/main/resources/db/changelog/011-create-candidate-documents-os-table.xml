@@ -6,46 +6,46 @@
         http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
 
-    <changeSet id="001-create-cars-table" author="TimurRashitov">
-        <createTable tableName="cars">
-            <column name="id" type="BIGINT">
+    <changeSet id="011-create-candidate-documents-os-table" author="TimurRashitov">
+        <createTable tableName="candidate_documents_os">
+            <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
 
-            <column name="brand" type="VARCHAR(255)">
+            <column name="candidate_email" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="model" type="VARCHAR(255)">
+            <column name="doc_type" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="production_year" type="INT">
-                <constraints nullable="false" />
-            </column>
-
-            <column name="mileage" type="INT">
+            <column name="original_filename" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="price" type="INT">
+            <column name="stored_filename" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="status" type="VARCHAR(255)">
+            <column name="content_type" type="VARCHAR(100)">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="fuel_type" type="VARCHAR(255)">
+            <column name="size" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="transmission" type="VARCHAR(255)">
+            <column name="storage_path" type="VARCHAR(500)">
                 <constraints nullable="false"/>
             </column>
 
+            <column name="created_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
 
         </createTable>
+
     </changeSet>
 
 </databaseChangeLog>

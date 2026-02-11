@@ -12,5 +12,6 @@
     <include file="db/changelog/004-seed-test-data.xml"/>
     <include file="db/changelog/009-create-client-documents-db-table.xml"/>
     <include file="db/changelog/010-create-car-documents-os-table.xml"/>
+    <include file="db/changelog/011-create-candidate-documents-os-table.xml"/>
 
 </databaseChangeLog>
